@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Configures the Camel Context -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:camel-cxf="http://camel.apache.org/schema/cxf"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="             http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd             http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd     http://camel.apache.org/schema/cxf http://camel.apache.org/schema/cxf/camel-cxf.xsd">
+    <bean class="org.apache.cxf.transport.common.gzip.GZIPInInterceptor" id="gZipInInterceptor"/>
+    <bean
+        class="org.apache.cxf.transport.common.gzip.GZIPOutInterceptor" id="gZipOutInterceptor"/>
+    <camel-cxf:cxfEndpoint
+        address="http://www.webservicex.net/globalweather.asmx"
+        id="weatherLookupClient" serviceClass="net.webservicex.GlobalWeatherSoap">
+        <camel-cxf:inInterceptors>
+            <ref bean="gZipInInterceptor"/>
+        </camel-cxf:inInterceptors>
+        <camel-cxf:outInterceptors>
+            <ref bean="gZipOutInterceptor"/>
+        </camel-cxf:outInterceptors>
+    </camel-cxf:cxfEndpoint>
+    <bean
+        class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" id="bean-66d2672d-c6c0-4984-bc31-90bc30bfaaef"/>
+    <camelContext id="_camelContext1"
+        xmlns="http://camel.apache.org/schema/spring" xmlns:order="http://fabric8.com/examples/order/v7">
+        <dataFormats>
+            <xmljson id="xmljson"/>
+        </dataFormats>
+        <restConfiguration apiContextPath="/api-doc" bindingMode="off"
+            component="servlet" contextPath="/api" enableCORS="true">
+            <dataFormatProperty key="prettyPrint" value="true"/>
+            <apiProperty key="host" value=""/>
+            <apiProperty key="api.version" value="1.0.0"/>
+            <apiProperty key="api.title" value="SOAP to REST Proxy"/>
+            <apiProperty key="api.description" value="Camel Rest Example with Swagger that provides a SOAP to REST proxy service"/>
+            <apiProperty key="api.contact.name" value="Simon Green"/>
+        </restConfiguration>
+        <!-- defines the rest service wrapper for a simple rest to soap proxy -->
+        <rest consumes="application/json" path="/citiesByCountry" produces="application/json">
+            <description>Rest service, returns a list of city names given a
+				country name</description>
+            <!-- this is a rest GET to view an organization by the given id -->
+            <get uri="/{countryName}">
+                <description>Find city names by country name</description>
+                <param dataType="string"
+                    description="The country name that returns a list of cities"
+                    name="countryName" type="path"/>
+                <to uri="direct:citiesByCountry"/>
+            </get>
+        </rest>
+        <route id="citiesByCountry">
+            <from id="_from1" uri="direct:citiesByCountry"/>
+            <removeHeaders id="_removeHeaders1" pattern="org.restlet.http.headers"/>
+            <setBody id="_setBody1">
+                <header>countryName</header>
+            </setBody>
+            <setHeader headerName="operationNamespace" id="_setHeader1">
+                <constant>http://www.webserviceX.NET</constant>
+            </setHeader>
+            <setHeader headerName="operationName" id="_setHeader2">
+                <constant>GetCitiesByCountry</constant>
+            </setHeader>
+            <to id="_to1" uri="cxf:bean:weatherLookupClient"/>
+            <marshal id="_marshal1" ref="xmljson"/>
+            <removeHeaders id="_removeHeaders2" pattern="*"/>
+        </route>
+    </camelContext>
+</beans>
