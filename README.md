@@ -5,7 +5,7 @@ Demonstration of a SOAP to REST Proxy for an existing SOAP service, using Fuse I
 
 ## Overview
 
-This project demonstrates a microservices based project leveraging SpringBoot and Apache Camel to proxy an existing SOAP service with a new REST front-end service.  Additionally, the REST API is documented using Swagger.  The project makes use of camel-servlet (to host Swagger on port 8080) and camel-restlet (to host RestDSL on port 9080) components.
+This project demonstrates a microservices based project leveraging SpringBoot and Apache Camel to proxy an existing SOAP service with a new REST front-end service.  Additionally, the REST API is documented using Swagger.  The project makes use of camel-servlet component listening on port 8080 and configured using Spring Boot.
 
 ## Prerequisites
 
