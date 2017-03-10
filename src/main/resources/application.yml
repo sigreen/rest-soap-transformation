@@ -1,0 +1,8 @@
+camel:
+  springboot:
+    name: rest-soap-transformation
+
+endpoints:
+  enabled: false
+  health:
+    enabled: true

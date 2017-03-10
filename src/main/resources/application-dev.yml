@@ -1,0 +1,12 @@
+camel:
+  springboot:
+    name: rest-soap-transformation
+
+server:
+  port: 8080
+
+# disable all management enpoints except health
+endpoints:
+  enabled: false
+  health:
+    enabled: true
