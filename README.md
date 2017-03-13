@@ -1,7 +1,7 @@
 Fuse Integration Services (FIS) SOAP to REST Proxy Demo
 ====================================
 
-Demonstration of a SOAP to REST Proxy for an existing SOAP service, using Fuse Integration Services 2.0
+Demonstration of a SOAP to REST Proxy for an existing SOAP service, using Fuse Integration Services 2.0.  A video walkthrough demonstrating this project can be found [here](https://youtu.be/TLOLWMeobuU).
 
 ## Overview
 
