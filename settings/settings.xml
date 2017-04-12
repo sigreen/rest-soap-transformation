@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.1.0 http://maven.apache.org/xsd/settings-1.1.0.xsd" xmlns="http://maven.apache.org/SETTINGS/1.1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <localRepository>/home/aphelio/.m2/repository</localRepository>
+  <servers>
+    <server>
+      <username>admin</username>
+      <password>admin</password>
+      <id>fabric8.console</id>
+    </server>
+  </servers>
+  <profiles>
+    <profile>
+      <repositories>
+        <repository>
+          <releases>
+            <updatePolicy>never</updatePolicy>
+          </releases>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+          <id>maven.central</id>
+          <name>Maven Central</name>
+          <url>https://repo1.maven.org/maven2</url>
+        </repository>
+        <repository>
+          <releases>
+            <updatePolicy>never</updatePolicy>
+          </releases>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+          <id>redhat.ga</id>
+          <name>Red Hat General Availability Repository</name>
+          <url>https://maven.repository.redhat.com/ga</url>
+        </repository>
+        <repository>
+          <releases>
+            <updatePolicy>never</updatePolicy>
+          </releases>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+          <id>redhat.ea</id>
+          <name>Red Hat EA Repository</name>
+          <url>https://maven.repository.redhat.com/earlyaccess/all</url>
+        </repository>
+      </repositories>
+      <pluginRepositories>
+        <pluginRepository>
+          <releases>
+            <updatePolicy>never</updatePolicy>
+          </releases>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+          <id>maven.central</id>
+          <name>Maven</name>
+          <url>https://repo1.maven.org/maven2</url>
+        </pluginRepository>
+        <pluginRepository>
+          <releases>
+            <updatePolicy>never</updatePolicy>
+          </releases>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+          <id>redhat.ga</id>
+          <name>Red Hat General Availability Repository</name>
+          <url>https://maven.repository.redhat.com/ga</url>
+        </pluginRepository>
+        <pluginRepository>
+          <releases>
+            <updatePolicy>never</updatePolicy>
+          </releases>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+          <id>redhat.ea</id>
+          <name>Red Hat EA Repository</name>
+          <url>https://maven.repository.redhat.com/earlyaccess/all</url>
+        </pluginRepository>
+      </pluginRepositories>
+      <id>redhat.repo</id>
+    </profile>
+  </profiles>
+  <activeProfiles>
+    <activeProfile>redhat.repo</activeProfile>
+  </activeProfiles>
+  <pluginGroups>
+    <pluginGroup>org.apache.maven.plugins</pluginGroup>
+    <pluginGroup>org.codehaus.mojo</pluginGroup>
+  </pluginGroups>
+</settings>
