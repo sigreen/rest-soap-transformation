@@ -7,8 +7,8 @@
     <bean
         class="org.apache.cxf.transport.common.gzip.GZIPOutInterceptor" id="gZipOutInterceptor"/>
     <camel-cxf:cxfEndpoint
-        address="http://www.webservicex.net/globalweather.asmx"
-        id="weatherLookupClient" serviceClass="net.webservicex.GlobalWeatherSoap">
+        address="http://services.aonaware.com/DictService/DictService.asmx"
+        id="dictionaryLookupClient" serviceClass="com.aonaware.services.webservices.DictServiceSoap">
         <camel-cxf:inInterceptors>
             <ref bean="gZipInInterceptor"/>
         </camel-cxf:inInterceptors>
@@ -22,6 +22,7 @@
         xmlns="http://camel.apache.org/schema/spring" xmlns:order="http://fabric8.com/examples/order/v7">
         <dataFormats>
             <xmljson id="xmljson"/>
+            <jacksonxml id="jack" unmarshalTypeName="com.aonaware.services.webservices.WordDefinition"/>
         </dataFormats>
         <restConfiguration apiContextPath="/api-doc" bindingMode="off"
             component="servlet" contextPath="/api" enableCORS="true">
@@ -33,32 +34,31 @@
             <apiProperty key="api.contact.name" value="Simon Green"/>
         </restConfiguration>
         <!-- defines the rest service wrapper for a simple rest to soap proxy -->
-        <rest consumes="application/json" path="/citiesByCountry" produces="application/json">
-            <description>Rest service, returns a list of city names given a
-				country name</description>
-            <!-- this is a rest GET to view an organization by the given id -->
-            <get uri="/{countryName}">
-                <description>Find city names by country name</description>
+        <rest consumes="application/json" path="/define" produces="application/json">
+            <description>Rest service, returns the definition of a dictionary word</description>
+            <get uri="/{dictionaryWord}">
+                <description>Find definition of a dictionary word</description>
                 <param dataType="string"
-                    description="The country name that returns a list of cities"
-                    name="countryName" type="path"/>
-                <to uri="direct:citiesByCountry"/>
+                    description="The dictionary word"
+                    name="dictionaryWord" type="path"/>
+                <to uri="direct:defineDictionaryWord"/>
             </get>
         </rest>
-        <route id="citiesByCountry">
-            <from id="_from1" uri="direct:citiesByCountry"/>
+        <route id="defineDictionaryWord">
+            <from id="_from1" uri="direct:defineDictionaryWord"/>
             <removeHeaders id="_removeHeaders1" pattern="org.restlet.http.headers"/>
             <setBody id="_setBody1">
-                <header>countryName</header>
+                <header>dictionaryWord</header>
             </setBody>
             <setHeader headerName="operationNamespace" id="_setHeader1">
-                <constant>http://www.webserviceX.NET</constant>
+                <constant>http://services.aonaware.com/webservices/</constant>
             </setHeader>
             <setHeader headerName="operationName" id="_setHeader2">
-                <constant>GetCitiesByCountry</constant>
+                <constant>Define</constant>
             </setHeader>
-            <to id="_to1" uri="cxf:bean:weatherLookupClient"/>
-            <marshal id="_marshal1" ref="xmljson"/>
+            <to id="_to1" uri="cxf:bean:dictionaryLookupClient"/>
+            <marshal id="_marshal1" ref="jack"/>
+            <marshal id="_marshal2" ref="xmljson"/>
             <removeHeaders id="_removeHeaders2" pattern="*"/>
         </route>
     </camelContext>

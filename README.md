@@ -31,12 +31,12 @@ mvn spring-boot:run -Dspring.profiles.active=dev
 Once the spring boot service has started, you can test the REST API by executing the following command
 
 ```
-curl http://localhost:8080/api/citiesByCountry/Germany
+curl http://localhost:8080/api/define/maim
 ```
 
-A list of German weather stations is returned in JSON format.  Try other countries as needed.
+The definition of the dictionary word from multiple dictionaries is returned in JSON format.  Try other words as needed.
 
-Additionally, you can reach the REST API using the web browser by navigating to http://localhost:8080/api/citiesByCountry/Germany .  It's also possible to navigate the REST service using the Swagger documentation [here](http://localhost:8080/index.html).
+Additionally, you can reach the REST API using the web browser by navigating to http://localhost:8080/api/define/maim.  It's also possible to navigate the REST service using the Swagger documentation [here](http://localhost:8080/index.html).
 
 ## Openshift / Minishift Deployment
 
@@ -74,276 +74,43 @@ The raw swagger definition can also be found at the context path `api/api-doc`
 Using a command line, execute the following to query the definition service
 
 ```
-curl -s http://$(oc get routes rest-soap-transformation --template='{{ .spec.host }}')/api/citiesByCountry/Australia | python -m json.tool
+curl -s http://$(oc get routes rest-soap-transformation --template='{{ .spec.host }}')/api/define/maim | python -m json.tool
 ```
 	
 A successful response will output the following
 
 ```
-[
-    {
-        "City": "Archerfield Aerodrome",
-        "Country": "Australia"
-    },
-    {
-        "City": "Amberley Aerodrome",
-        "Country": "Australia"
-    },
-    {
-        "City": "Alice Springs Aerodrome",
-        "Country": "Australia"
-    },
-    {
-        "City": "Brisbane Airport M. O",
-        "Country": "Australia"
-    },
-    {
-        "City": "Coolangatta Airport Aws",
-        "Country": "Australia"
-    },
-    {
-        "City": "Cairns Airport",
-        "Country": "Australia"
-    },
-    {
-        "City": "Charleville Airport",
-        "Country": "Australia"
-    },
-    {
-        "City": "Gladstone",
-        "Country": "Australia"
-    },
-    {
-        "City": "Longreach Airport",
-        "Country": "Australia"
-    },
-    {
-        "City": "Mount Isa Amo",
-        "Country": "Australia"
-    },
-    {
-        "City": "Mackay Mo",
-        "Country": "Australia"
-    },
-    {
-        "City": "Oakey Aerodrome",
-        "Country": "Australia"
-    },
-    {
-        "City": "Proserpine Airport",
-        "Country": "Australia"
-    },
-    {
-        "City": "Rockhampton Airport",
-        "Country": "Australia"
-    },
-    {
-        "City": "Broome Airport",
-        "Country": "Australia"
-    },
-    {
-        "City": "Townsville Amo",
-        "Country": "Australia"
-    },
-    {
-        "City": "Weipa City",
-        "Country": "Australia"
-    },
-    {
-        "City": "Gove Airport",
-        "Country": "Australia"
-    },
-    {
-        "City": "Tennant Creek Airport",
-        "Country": "Australia"
-    },
-    {
-        "City": "Yulara Aws",
-        "Country": "Australia"
-    },
-    {
-        "City": "Albury Airport",
-        "Country": "Australia"
-    },
-    {
-        "City": "Devonport East",
-        "Country": "Australia"
-    },
-    {
-        "City": "Goldstream Aws",
-        "Country": "Australia"
-    },
-    {
-        "City": "East Sale Aerodrome",
-        "Country": "Australia"
-    },
-    {
-        "City": "Hobart Airport",
-        "Country": "Australia"
-    },
-    {
-        "City": "Launceston Airport",
-        "Country": "Australia"
-    },
-    {
-        "City": "Laverton Aerodrome",
-        "Country": "Australia"
-    },
-    {
-        "City": "Moorabbin Airport Aws",
-        "Country": "Australia"
-    },
-    {
-        "City": "Mount Gambier Aerodrome",
-        "Country": "Australia"
-    },
-    {
-        "City": "Mildura Airport",
-        "Country": "Australia"
-    },
-    {
-        "City": "Melbourne Airport",
-        "Country": "Australia"
-    },
-    {
-        "City": "Macquarie Island",
-        "Country": "Australia"
-    },
-    {
-        "City": "Wynyard West",
-        "Country": "Australia"
-    },
-    {
-        "City": "Adelaide Airport",
-        "Country": "Australia"
-    },
-    {
-        "City": "Albany Airport",
-        "Country": "Australia"
-    },
-    {
-        "City": "Broken Hill Patton Street",
-        "Country": "Australia"
-    },
-    {
-        "City": "Ceduna Airport",
-        "Country": "Australia"
-    },
-    {
-        "City": "Derby",
-        "Country": "Australia"
-    },
-    {
-        "City": "Darwin Airport",
-        "Country": "Australia"
-    },
-    {
-        "City": "Bullsbrook Pearce Amo",
-        "Country": "Australia"
-    },
-    {
-        "City": "Edinburgh M. O.",
-        "Country": "Australia"
-    },
-    {
-        "City": "Forrest Airport",
-        "Country": "Australia"
-    },
-    {
-        "City": "Geraldton Airport",
-        "Country": "Australia"
-    },
-    {
-        "City": "Kalgoorlie Boulder Amo",
-        "Country": "Australia"
-    },
-    {
-        "City": "Kununurra Kununurra Aws",
-        "Country": "Australia"
-    },
-    {
-        "City": "Leigh Creek Airport",
-        "Country": "Australia"
-    },
-    {
-        "City": "Learmonth Airport",
-        "Country": "Australia"
-    },
-    {
-        "City": "Meekatharra Airport",
-        "Country": "Australia"
-    },
-    {
-        "City": "Port Hedland Pardoo",
-        "Country": "Australia"
-    },
-    {
-        "City": "Parafield Airport",
-        "Country": "Australia"
-    },
-    {
-        "City": "Belmont Perth Airport",
-        "Country": "Australia"
-    },
-    {
-        "City": "Katherine Aerodrome",
-        "Country": "Australia"
-    },
-    {
-        "City": "Woomera Aerodrome",
-        "Country": "Australia"
-    },
-    {
-        "City": "Bankstown Airport Aws",
-        "Country": "Australia"
-    },
-    {
-        "City": "Canberra",
-        "Country": "Australia"
-    },
-    {
-        "City": "Coffs Harbour Mo",
-        "Country": "Australia"
-    },
-    {
-        "City": "Cooma",
-        "Country": "Australia"
-    },
-    {
-        "City": "Camden Airport",
-        "Country": "Australia"
-    },
-    {
-        "City": "Dubbo",
-        "Country": "Australia"
-    },
-    {
-        "City": "Norfolk Island Airport",
-        "Country": "Australia"
-    },
-    {
-        "City": "Nowra Ran Air Station",
-        "Country": "Australia"
-    },
-    {
-        "City": "Richmond Aus-Afb",
-        "Country": "Australia"
-    },
-    {
-        "City": "Sydney Airport",
-        "Country": "Australia"
-    },
-    {
-        "City": "Tamworth Airport",
-        "Country": "Australia"
-    },
-    {
-        "City": "Wagga Airport",
-        "Country": "Australia"
-    },
-    {
-        "City": "Williamtown Aerodrome",
-        "Country": "Australia"
+{
+  "item": {
+    "Word": "maim",
+    "Definitions": {
+      "Definition": [
+        {
+          "Word": "maim",
+          "Dictionary": {
+            "Id": "gcide",
+            "Name": "The Collaborative International Dictionary of English v.0.44"
+          },
+          "WordDefinition": "Maim \\Maim\\, n. [Written in law language {maihem}, and   {mayhem}.] [OF. mehaing. See {Maim}, v.]   1. The privation of the use of a limb or member of the body,      by which one is rendered less able to defend himself or to      annoy his adversary.      [1913 Webster]   2. The privation of any necessary part; a crippling;      mutilation; injury; deprivation of something essential.      See {Mayhem}.      [1913 Webster]            Surely there is more cause to fear lest the want            there of be a maim than the use of it a blemish.                                                  --Hooker.      [1913 Webster]            A noble author esteems it to be a maim in history            that the acts of Parliament should not be recited.                                                  --Hayward.      [1913 Webster]"
+        },
+        {
+          "Word": "maim",
+          "Dictionary": {
+            "Id": "gcide",
+            "Name": "The Collaborative International Dictionary of English v.0.44"
+          },
+          "WordDefinition": "Maim \\Maim\\ (m[=a]m), v. t. [imp. & p. p. {Maimed} (m[=a]md);p.   pr. & vb. n. {Maiming}.] [OE. maimen, OF. mahaignier,   mehaignier, meshaignier, cf. It. magagnare, LL. mahemiare,   mahennare; perh. of Celtic origin; cf. Armor. mac'ha[~n]a to   mutilate, m[=a]c'ha to crowd, press; or cf. OHG. mang[=o]n to   lack, perh. akin to E. mangle to lacerate. Cf. {Mayhem}.]   1. To deprive of the use of a limb, so as to render a person      in fighting less able either to defend himself or to annoy      his adversary.      [1913 Webster]            By the ancient law of England he that maimed any man            whereby he lost any part of his body, was sentenced            to lose the like part.                --Blackstone.      [1913 Webster]   2. To mutilate; to cripple; to injure; to disable; to impair.      [1913 Webster]            My late maimed limbs lack wonted might. --Spenser.      [1913 Webster]            You maimed the jurisdiction of all bishops. --Shak.      [1913 Webster]   Syn: To mutilate; mangle; cripple.        [1913 Webster]"
+        },
+        {
+          "Word": "maim",
+          "Dictionary": {
+            "Id": "wn",
+            "Name": "WordNet (r) 2.0"
+          },
+          "WordDefinition": "maim     v : injure or wound seriously and leave permanent disfiguration         or mutilation; \"people were maimed by the explosion\""
+        }
+      ]
     }
-]
+  }
+}
 ```

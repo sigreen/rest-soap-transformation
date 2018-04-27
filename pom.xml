@@ -6,8 +6,8 @@
 	<groupId>org.example</groupId>
 	<artifactId>rest-soap-transformation</artifactId>
 	<version>1.0.0</version>
-	<name>SOAP Provider :: Weather Lookup Service :: SOAP Provider</name>
-	<description>JAXWS artifacts for the Weather Lookup Service.  Provides REST to SOAP transformation</description>
+	<name>SOAP Provider :: Dictionary Word Lookup Service :: SOAP Provider</name>
+	<description>JAXWS artifacts for the Dictionary Word Lookup Service.  Provides REST to SOAP transformation</description>
 	<properties>
 		<spring-boot.version>1.4.1.RELEASE</spring-boot.version>
 		<fabric8.version>2.2.170.redhat-000010</fabric8.version>
@@ -85,6 +85,10 @@
 		<dependency>
 			<groupId>org.apache.camel</groupId>
 			<artifactId>camel-xmljson</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-jacksonxml</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>xom</groupId>
@@ -191,7 +195,7 @@
 							</defaultOptions>
 							<wsdlOptions>
 								<wsdlOption>
-									<wsdl>${basedir}/src/main/wsdl/globalweather.wsdl</wsdl>
+									<wsdl>${basedir}/src/main/wsdl/DictService.wsdl</wsdl>
 								</wsdlOption>
 							</wsdlOptions>
 						</configuration>
