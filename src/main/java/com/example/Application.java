@@ -24,7 +24,7 @@ public class Application extends RouteBuilder {
     @Bean
     ServletRegistrationBean servletRegistrationBean() {
         ServletRegistrationBean servlet = new ServletRegistrationBean(
-            new CamelHttpTransportServlet(), "/api/*");
+            new CamelHttpTransportServlet(), "/camel/*");
         servlet.setName("CamelServlet");
         return servlet;
     }

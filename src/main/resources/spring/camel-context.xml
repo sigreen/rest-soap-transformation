@@ -25,7 +25,7 @@
             <jacksonxml id="jack" unmarshalTypeName="com.aonaware.services.webservices.WordDefinition"/>
         </dataFormats>
         <restConfiguration apiContextPath="/api-doc" bindingMode="off"
-            component="servlet" contextPath="/api" enableCORS="true">
+            component="servlet" contextPath="/camel" enableCORS="true">
             <dataFormatProperty key="prettyPrint" value="true"/>
             <apiProperty key="host" value=""/>
             <apiProperty key="api.version" value="1.0.0"/>
@@ -34,9 +34,11 @@
             <apiProperty key="api.contact.name" value="Simon Green"/>
         </restConfiguration>
         <!-- defines the rest service wrapper for a simple rest to soap proxy -->
-        <rest consumes="application/json" path="/define" produces="application/json">
+        <rest consumes="application/json"
+            id="rest-8a0c5944-9cab-4440-bd86-da1af4c738ea"
+            path="/define" produces="application/json">
             <description>Rest service, returns the definition of a dictionary word</description>
-            <get uri="/{dictionaryWord}">
+            <get id="get-dc11a280-5396-4e96-a062-a2fae0d47900" uri="/{dictionaryWord}">
                 <description>Find definition of a dictionary word</description>
                 <param dataType="string"
                     description="The dictionary word"
