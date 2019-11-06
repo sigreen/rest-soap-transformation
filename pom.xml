@@ -196,7 +196,7 @@
 							</defaultOptions>
 							<wsdlOptions>
 								<wsdlOption>
-									<wsdl>${basedir}/src/main/wsdl/DictService.wsdl</wsdl>
+									<wsdl>https://www.dataaccess.com/webservicesserver/numberconversion.wso?WSDL</wsdl>
 								</wsdlOption>
 							</wsdlOptions>
 						</configuration>
@@ -241,9 +241,9 @@
 				<defaultGoal>clean fabric8:deploy</defaultGoal>
 				<plugins>
 					<plugin>
-						<groupId>io.fabric8</groupId>
-						<artifactId>fabric8-maven-plugin</artifactId>
-						<version>${fabric8.maven.plugin.version}</version>
+                        			<groupId>io.fabric8</groupId>
+                        			<artifactId>fabric8-maven-plugin</artifactId>
+                        			<version>4.3.1</version>
 						<executions>
 							<execution>
 								<goals>
