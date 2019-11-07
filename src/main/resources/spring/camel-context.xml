@@ -40,7 +40,7 @@
             <description>Rest service, returns the textual description of a number</description>
             <get id="get-dc11a280-5396-4e96-a062-a2fae0d47900" uri="/{ubiNum}">
                 <description>Find textual description of a number</description>
-                <param dataType="String"
+                <param dataType="string"
                     description="The number"
                     name="ubiNum" type="path"/>
                 <to uri="direct:defineNumberToWords"/>
