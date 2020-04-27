@@ -38,7 +38,23 @@ The number written in words is returned in JSON format.  Try other numbers as ne
 
 It's also possible to navigate the REST service using the Swagger / OpenAPI documentation [here](http://localhost:8080/swagger-ui.html).
 
-## Openshift / Minishift Deployment
+## Openshift 4.x S2I Build / Deploy
+
+The easiest method to deploy this example is to use the standard Openshift S2I build Method.
+
+1. Login to the OpenShift Developer Web Console using your credentials.
+2. Click on Project then *Create Project*.  Give the project name: `fuse-soap-rest-proxy` and description: `Fuse SOAP to REST Proxy Demo`.  Click **Create**.
+![](images/create-project.png "create-project")
+3. On the Topology page, click *+Add* then *From Git*
+4. In the *Git Repo URL* field, enter this repo URL: `https://github.com/sigreen/rest-soap-transformation`.  Select **Java** as the *Builder Image*, and **11** as the *Builder Image Version*.  Click on *Create*.
+![](images/import-git.png "import-git")
+5. Give the build a couple of minutes to build and deploy. If you click on the blue circle, you should see under the *Resources* tab that build is running.
+![](images/build-running.png "build-running")
+6.  Once the deployment has finished, click on the URL link and append the following to the URI: `/swagger-ui.html`.
+![](images/open-url.png "open-url.png")
+
+
+## Openshift / Minishift Deployment (Fabric8 MVN Plugin)
 
 First, create a new OpenShift project called *fuse-soap-rest-proxy*
 
