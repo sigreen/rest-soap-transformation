@@ -160,7 +160,7 @@
               </defaultOptions>
               <wsdlOptions>
                 <wsdlOption>
-                  <wsdl>https://www.dataaccess.com/webservicesserver/numberconversion.wso?WSDL</wsdl>
+                  <wsdl>${basedir}/src/main/resources/numberconversion.wsdl</wsdl>
                 </wsdlOption>
               </wsdlOptions>
             </configuration>
