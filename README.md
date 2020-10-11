@@ -104,3 +104,202 @@ A successful response will output the following
     "item": "seven hundred and thirty seven thousand three hundred and seventy three "
 }
 ```
+
+## Adding two-way SSL / mutual TLS
+
+
+```
+oc new-project mtls --description="Mutual TLS REST to SOAP" --display-name="mTLS REST to SOAP"
+```
+
+```
+mkdir mTLS
+cd mTLS
+```
+
+
+```
+openssl req -x509 -sha256 -days 3650 -newkey rsa:4096 -keyout rootCA.key -out rootCA.crt
+Generating a 4096 bit RSA private key
+..............................++
+..........................++
+writing new private key to 'rootCA.key'
+Enter PEM pass phrase:
+Verifying - Enter PEM pass phrase:
+-----
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter '.', the field will be left blank.
+-----
+Country Name (2 letter code) []:us
+State or Province Name (full name) []:vt
+Locality Name (eg, city) []:newport
+Organization Name (eg, company) []:redhat
+Organizational Unit Name (eg, section) []:sales
+Common Name (eg, fully qualified host name) []:x509-api-mtls.apps.cluster-boc-7eee.boc-7eee.example.opentlc.com
+Email Address []:sigreen@redhat.com
+```
+
+```
+openssl req -new -newkey rsa:4096 -keyout localhost.key
+Generating a 4096 bit RSA private key
+............................................................................................................................................................................................................................................................................................................++
+............................................................................................................................................................................................................................................................................................++
+writing new private key to 'localhost.key'
+Enter PEM pass phrase:
+Verifying - Enter PEM pass phrase:
+-----
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter '.', the field will be left blank.
+-----
+Country Name (2 letter code) []:us
+State or Province Name (full name) []:vt
+Locality Name (eg, city) []:newport
+Organization Name (eg, company) []:redhat
+Organizational Unit Name (eg, section) []:sales
+Common Name (eg, fully qualified host name) []:x509-api-mtls.apps.cluster-boc-7eee.boc-7eee.example.opentlc.com
+Email Address []:sigreen@redhat.com
+
+Please enter the following 'extra' attributes
+to be sent with your certificate request
+A challenge password []:changeit
+```
+
+```
+vi localhost.csr
+```
+
+```
+vi localhost.ext
+...
+authorityKeyIdentifier=keyid,issuer
+basicConstraints=CA:FALSE
+subjectAltName = @alt_names
+[alt_names]
+DNS.1 = x509-api-mtls.apps.cluster-boc-7eee.boc-7eee.example.opentlc.com
+...
+```
+
+```
+openssl x509 -req -CA rootCA.crt -CAkey rootCA.key -in localhost.csr -out localhost.crt -days 365 -CAcreateserial -extfile localhost.ext
+Signature ok
+subject=/C=us/ST=vt/L=newport/O=redhat/OU=sales/CN=x509-api-mtls.apps.cluster-boc-7eee.boc-7eee.example.opentlc.com/emailAddress=sigreen@redhat.com
+Getting CA Private Key
+Enter pass phrase for rootCA.key:
+```
+
+```
+openssl pkcs12 -export -out localhost.p12 -name "x509-api-mtls" -inkey localhost.key -in localhost.crt
+```
+
+```
+keytool -importkeystore -srckeystore localhost.p12 -srcstoretype PKCS12 -destkeystore keystore.jks -deststoretype JKS
+```
+
+```
+keytool -import -trustcacerts -noprompt -alias ca -ext san=dns:x509-api-mtls.apps.cluster-boc-7eee.boc-7eee.example.opentlc.com -file rootCA.crt -keystore truststore.jks
+```
+
+```
+mkdir security-config
+cp keystore.jks security-config/keystore.jks
+cp truststore.jks security-config/truststore.jks
+oc create configmap my-x509-config --from-file=security-config/
+```
+
+```
+# lets use a different management port in case you need to listen to HTTP requests on 8080
+management.server.port=8081
+management.server.ssl.enabled=false
+
+# disable all management endpoints except health
+endpoints.enabled = false
+endpoints.health.enabled = true
+
+springfox.documentation.swagger.v2.path=/camel/api-doc
+
+server.port=8443
+server.ssl.enabled=true
+server.ssl.client-auth=need
+server.ssl.key-store=/my-x509-config/keystore.jks
+server.ssl.key-store-password=changeit
+server.ssl.trust-store=/my-x509-config/truststore.jks
+server.ssl.trust-store-password=changeit
+```
+
+1. Update camel-context.xml scheme to "https"
+
+```
+mvn -P openshift clean install fabric8:deploy
+```
+
+```
+cd ../mtls
+openssl req -new -newkey rsa:4096 -nodes -keyout clientErfin.key
+Generating a 4096 bit RSA private key
+..................................................................................++
+......................................................++
+writing new private key to 'clientErfin.key'
+-----
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter '.', the field will be left blank.
+-----
+Country Name (2 letter code) []:vt
+State or Province Name (full name) []:^C
+sigreen-macbook:mtls simon$ openssl req -new -newkey rsa:4096 -nodes -keyout clientErfin.key
+Generating a 4096 bit RSA private key
+...............++
+....................................................................................................................................................................++
+writing new private key to 'clientErfin.key'
+-----
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter '.', the field will be left blank.
+-----
+Country Name (2 letter code) []:us
+State or Province Name (full name) []:vt
+Locality Name (eg, city) []:newport
+Organization Name (eg, company) []:redhat
+Organizational Unit Name (eg, section) []:sales
+Common Name (eg, fully qualified host name) []:x509-api-mtls.apps.cluster-boc-7eee.boc-7eee.example.opentlc.com
+Email Address []:sigreen@redhat.com
+
+Please enter the following 'extra' attributes
+to be sent with your certificate request
+A challenge password []:changeit
+```
+
+```
+vi clientErfin.csr
+-----BEGIN CERTIFICATE REQUEST-----
+
+...
+-----END CERTIFICATE REQUEST-----
+```
+
+```
+openssl x509 -req -CA rootCA.crt -CAkey rootCA.key -in clientErfin.csr -out clientErfin.crt -days 365 -CAcreateserial
+Signature ok
+subject=/C=us/ST=vt/L=newport/O=redhat/OU=sales/CN=x509-api-mtls.apps.cluster-boc-7eee.boc-7eee.example.opentlc.com/emailAddress=sigreen@redhat.com
+Getting CA Private Key
+Enter pass phrase for rootCA.key:
+```
+
+```
+openssl pkcs12 -export -out clientErfin.p12 -name "x509-api-mtls" -inkey clientErfin.key -in clientErfin.crt
+
+

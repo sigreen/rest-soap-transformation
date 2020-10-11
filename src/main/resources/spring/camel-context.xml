@@ -25,7 +25,7 @@
             <jacksonxml id="jack" unmarshalTypeName="com.dataaccess.webservicesserver.NumberToWordsResponse"/>
         </dataFormats>
         <restConfiguration apiContextPath="/api-doc" bindingMode="off"
-            component="servlet" contextPath="/camel" enableCORS="true">
+            component="servlet" contextPath="/camel" enableCORS="true" scheme="http">
             <dataFormatProperty key="prettyPrint" value="true"/>
             <apiProperty key="host" value=""/>
             <apiProperty key="api.version" value="1.0.0"/>

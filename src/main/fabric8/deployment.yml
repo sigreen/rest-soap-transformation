@@ -1,0 +1,19 @@
+spec:
+  template:
+    spec:
+      containers:
+      - name: ${project.artifactId}
+        env:
+        resources:
+          requests:
+            cpu: "0.5"
+          limits:
+            cpu: "4.0"
+        volumeMounts:
+        - name: ${project.artifactId}-configmap-vol
+          mountPath: /my-x509-config
+          readOnly: false
+      volumes:
+      - name: ${project.artifactId}-configmap-vol
+        configMap:
+          name: my-x509-config
