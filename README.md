@@ -107,16 +107,29 @@ A successful response will output the following
 
 ## Adding two-way SSL / mutual TLS
 
+If you'd like to add client certificate (two-way SSL) to the mix when running on OCP, this is achievable by the following procedure:
+
+
+1. Create a new Openshift project via the following CLI:
 
 ```
 oc new-project mtls --description="Mutual TLS REST to SOAP" --display-name="mTLS REST to SOAP"
 ```
+
+2. Locally, create the following directory:
 
 ```
 mkdir mTLS
 cd mTLS
 ```
 
+3. Via your CLI, set the Apps route name to your OCP environment apps route name:
+
+```
+export APPSHOST=apps.cluster-boc-bc83.boc-bc83.example.opentlc.com
+```
+
+4. Create the root CA. Use `changeit` as the password, and ensure the CN matches the following entry: `echo x509-api-mtls.$APPSHOST` :
 
 ```
 openssl req -x509 -sha256 -days 3650 -newkey rsa:4096 -keyout rootCA.key -out rootCA.crt
@@ -139,9 +152,11 @@ State or Province Name (full name) []:vt
 Locality Name (eg, city) []:newport
 Organization Name (eg, company) []:redhat
 Organizational Unit Name (eg, section) []:sales
-Common Name (eg, fully qualified host name) []:x509-api-mtls.apps.cluster-boc-7eee.boc-7eee.example.opentlc.com
+Common Name (eg, fully qualified host name) []:x509-api-mtls.$APPSHOST
 Email Address []:sigreen@redhat.com
 ```
+
+5. Create the key, using `changeit` as the password and ensuring the CN matches below (`echo x509-api-mtls.$APPSHOST`):
 
 ```
 openssl req -new -newkey rsa:4096 -keyout localhost.key
@@ -164,7 +179,7 @@ State or Province Name (full name) []:vt
 Locality Name (eg, city) []:newport
 Organization Name (eg, company) []:redhat
 Organizational Unit Name (eg, section) []:sales
-Common Name (eg, fully qualified host name) []:x509-api-mtls.apps.cluster-boc-7eee.boc-7eee.example.opentlc.com
+Common Name (eg, fully qualified host name) []:x509-api-mtls.$APPSHOST
 Email Address []:sigreen@redhat.com
 
 Please enter the following 'extra' attributes
@@ -172,9 +187,13 @@ to be sent with your certificate request
 A challenge password []:changeit
 ```
 
+6. Create the certificate signing request by copying the output of the previous command and pasting into VI:
+
 ```
 vi localhost.csr
 ```
+
+7. Add the following information to `localhost.ext`, but be sure to enter the correct DNS entry (you find this by typing `echo x509-api-mtls.$APPSHOST`):
 
 ```
 vi localhost.ext
@@ -183,9 +202,11 @@ authorityKeyIdentifier=keyid,issuer
 basicConstraints=CA:FALSE
 subjectAltName = @alt_names
 [alt_names]
-DNS.1 = x509-api-mtls.apps.cluster-boc-7eee.boc-7eee.example.opentlc.com
+DNS.1 = x509-api-mtls.<your apps hostname>
 ...
 ```
+
+8. Create the private key:
 
 ```
 openssl x509 -req -CA rootCA.crt -CAkey rootCA.key -in localhost.csr -out localhost.crt -days 365 -CAcreateserial -extfile localhost.ext
@@ -195,17 +216,25 @@ Getting CA Private Key
 Enter pass phrase for rootCA.key:
 ```
 
+9. Create the keystore:
+
 ```
 openssl pkcs12 -export -out localhost.p12 -name "x509-api-mtls" -inkey localhost.key -in localhost.crt
 ```
+
+10. Create the JKS keystore:
 
 ```
 keytool -importkeystore -srckeystore localhost.p12 -srcstoretype PKCS12 -destkeystore keystore.jks -deststoretype JKS
 ```
 
+11. Creat the JKS trustore:
+
 ```
-keytool -import -trustcacerts -noprompt -alias ca -ext san=dns:x509-api-mtls.apps.cluster-boc-7eee.boc-7eee.example.opentlc.com -file rootCA.crt -keystore truststore.jks
+keytool -import -trustcacerts -noprompt -alias ca -ext san=dns:x509-api-mtls.<enter your apps hostname> -file rootCA.crt -keystore truststore.jks
 ```
+
+12. Create the config map:
 
 ```
 mkdir security-config
@@ -213,6 +242,8 @@ cp keystore.jks security-config/keystore.jks
 cp truststore.jks security-config/truststore.jks
 oc create configmap my-x509-config --from-file=security-config/
 ```
+
+13. Via the IDE, update the `src/main/resources/application.properties with the following:
 
 ```
 # lets use a different management port in case you need to listen to HTTP requests on 8080
@@ -234,11 +265,34 @@ server.ssl.trust-store=/my-x509-config/truststore.jks
 server.ssl.trust-store-password=changeit
 ```
 
-1. Update camel-context.xml scheme to "https"
+14. Update camel-context.xml scheme to "https":
 
 ```
+...
+        <restConfiguration apiContextPath="/api-doc" bindingMode="off"
+            component="servlet" contextPath="/camel" enableCORS="true" scheme="https">
+            <dataFormatProperty key="prettyPrint" value="true"/>
+            <apiProperty key="host" value=""/>
+            <apiProperty key="api.version" value="1.0.0"/>
+            <apiProperty key="api.title" value="SOAP to REST Proxy"/>
+            <apiProperty key="api.description" value="Camel Rest Example with Swagger that provides a SOAP to REST proxy service"/>
+            <apiProperty key="api.contact.name" value="Simon Green"/>
+        </restConfiguration>
+...
+```
+
+15. Via the CLI, execute the following:
+
+```
+cd ../rest-soap-transformation
 mvn -P openshift clean install fabric8:deploy
 ```
+
+16. Create the route using the following configuration:
+![](images/secure-route.png "secure-route")
+
+
+17. Before testing, we need to create the client certicates using `changeit` as the password:
 
 ```
 cd ../mtls
@@ -283,6 +337,8 @@ to be sent with your certificate request
 A challenge password []:changeit
 ```
 
+18. Create the client signing request:
+
 ```
 vi clientErfin.csr
 -----BEGIN CERTIFICATE REQUEST-----
@@ -290,6 +346,8 @@ vi clientErfin.csr
 ...
 -----END CERTIFICATE REQUEST-----
 ```
+
+19. Create the client key:
 
 ```
 openssl x509 -req -CA rootCA.crt -CAkey rootCA.key -in clientErfin.csr -out clientErfin.crt -days 365 -CAcreateserial
@@ -299,7 +357,18 @@ Getting CA Private Key
 Enter pass phrase for rootCA.key:
 ```
 
+20. Create the client keystore:
+
 ```
 openssl pkcs12 -export -out clientErfin.p12 -name "x509-api-mtls" -inkey clientErfin.key -in clientErfin.crt
+```
+
+21. Import the root CA and client key into Postman:
+
+![](images/cert-1.png "cert-1")
+![](images/cert-2.png "cert-2")
 
 
+22. Test the request. If everything is successful, you should see the following:
+
+![](images/postman-confirm.png "postman-confirm")
