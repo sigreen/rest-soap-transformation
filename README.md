@@ -1,7 +1,7 @@
 Fuse 7.4 SOAP to REST Proxy Demo on OpenShift 4.2
 ====================================
 
-Demonstration of a SOAP to REST Proxy for an existing SOAP service, using the Fuse 7.4 image stream.  A video walkthrough demonstrating this project can be found [here](https://youtu.be/TLOLWMeobuU).
+Demonstration of a SOAP to REST Proxy for existing SOAP service, using the Fuse 7.4 image stream.  A video walkthrough demonstrating this project can be found [here](https://youtu.be/TLOLWMeobuU).
 
 ## Overview
 
